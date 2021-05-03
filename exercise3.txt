@@ -1,5 +1,5 @@
 UNF
-DB(patientNo, name, bedNo, wardNo, wardName [drugNo, drugName, description, dosage, method, units, startDate, endDate])
+DB(patientNo, name, bedNo, wardNo, wardName, [drugNo, drugName, description, dosage, method, units, startDate, endDate])
 
 1NF
 data in UNF and no repeating groups, empty fields. All attributes are defined and primary key is determined.
