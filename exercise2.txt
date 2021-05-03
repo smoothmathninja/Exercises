@@ -1,0 +1,40 @@
+UNF
+
+DB(staffNo, dentistName, patientNo, patientName, appointment, surgeryNo)
+
+1NF
+
+Remove repeating groups, empty fields and define all attributes.
+
+DB(staffNo, dentistName, patientNo, patientName, appDate, appTime, surgeryNo)
+
+Determine the PK
+
+DB(*staffNo*, dentistName, patientNo, patientName, *appDate*, *appTime*, surgeryNo)
+
+2NF
+
+Data in 1NF and no partial dependencies.
+
+dentistName	only need to know staffNo
+patientNo	no partial dependency
+patientName	no partial dependency
+surgeryNo	no partial dependency
+
+
+Dentist(*staffNo*, dentistName)
+DB(*staffNo*, patientNo, patientName, *appDate*, *appTime*, surgeryNo)
+
+3NF
+
+patientNo and patientName are transitive dependent.
+
+Dentist(*staffNo*, dentistName)
+Patient(*patientNo*, patientName)
+DB(*staffNo*, patientNo, *appDate*, *appTime*, surgeryNo)
+
+BCNF
+
+Data in 3NF and all determinants are candidate keys
+
+BCNF = 3NF 
