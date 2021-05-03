@@ -1,0 +1,37 @@
+UNF
+DB(patientNo, name, bedNo, wardNo, wardName [drugNo, drugName, description, dosage, method, units, startDate, endDate])
+
+1NF
+data in UNF and no repeating groups, empty fields. All attributes are defined and primary key is determined.
+Repeating group is present between [] and PK not determined -> violation of 3NF
+
+DB(*patientNo*, name, bedNo, wardNo, wardName, *drugNo*, drugName, description, dosage, method, units, *startDate*, endDate)
+
+2NF
+
+data in 1NF and no partial dependency.
+
+name, bedNo, wardNo, wardName are all partially dependent on patientNo -> violation of 2NF rule
+drugName, description, dosage, method and units are all partially dependent on drugNo -> violation of 2NF rule
+
+patient_ward(*patient_no*, name, bedNo, wardNo, wardName)
+patient_drugs(*patientNo*,*drugNo*, *startDate*, endDate, units)
+drugs(*drugNo*, drugName, description, dosage, method)
+
+3NF
+
+data in 2NF and no transitive dependency
+
+wardNo -> wardName = violation of 3NF rule
+
+ward(*wardNo*, wardName)
+patient_ward(*patientNo*, name, bedNo, wardNo)
+patient_drugs(*patientNo*,*drugNo*, *startDate*, endDate, units) 
+drugs(*drugNo*, drugName, description, dosage, method)
+
+BCNF
+
+data in 3NF and all determinants are also candidate keys.
+
+BCNF = 3NF
+
