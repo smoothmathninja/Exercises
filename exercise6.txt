@@ -1,0 +1,132 @@
+
+MySQL [college]> select stdFirstName, stdLastName, stdCity, stdGPA from student where stdGPA >= 3.7;
++--------------+-------------+---------+--------+
+| stdFirstName | stdLastName | stdCity | stdGPA |
++--------------+-------------+---------+--------+
+| CRISTOPHER   | COLAN       | SEATTLE |   4.00 |
+| WILLIAM      | PILGRIM     | BOTHELL |   3.80 |
++--------------+-------------+---------+--------+
+2 rows in set (0.001 sec)
+
+---------------------------------------------------------------------------------
+
+MySQL [college]> select FacFirstName, FacLastName, FacHireDate from faculty where year(FacHireDate) = 1999 or year(FacHireDate) = 2000;
++--------------+-------------+-------------+
+| FacFirstName | FacLastName | FacHireDate |
++--------------+-------------+-------------+
+| CRISTOPHER   | COLAN       | 1999-03-01  |
+| JULIA        | MILLS       | 2000-03-15  |
++--------------+-------------+-------------+
+2 rows in set (0.001 sec)
+
+---------------------------------------------------------------------------------
+
+MySQL [college]> select OfferNo, CourseNo, FacSSN from offering where (OffTerm = "SUMMER" or OffTerm = "FALL") and (OffYear = 2005 or OffYear = 2006);
++---------+----------+-------------+
+| OfferNo | CourseNo | FacSSN      |
++---------+----------+-------------+
+|    1111 | IS320    |             |
+|    1234 | IS320    | 098-76-5432 |
+|    2222 | IS460    |             |
+|    4321 | IS320    | 098-76-5432 |
+|    8888 | IS320    | 654-32-1098 |
++---------+----------+-------------+
+5 rows in set (0.001 sec)
+
+---------------------------------------------------------------------------------
+
+MySQL [college]> select OfferNo, offering.CourseNo, OffDays, OffTime from offering join course on offering.CourseNo = course.CourseNo where (crsDesc like "%database%" or crsDesc like "%programming%") and OffYear = 2006 and OffTerm = "spring";
++---------+----------+---------+----------+
+| OfferNo | CourseNo | OffDays | OffTime  |
++---------+----------+---------+----------+
+|    3333 | IS320    | MW      | 08:30:00 |
+|    5679 | IS480    | TTH     | 15:30:00 |
++---------+----------+---------+----------+
+2 rows in set (0.001 sec)
+
+---------------------------------------------------------------------------------
+
+MySQL [college]> select OfferNo, CourseNo, concat(FacFirstName," ", FacLastName) as FacName from offering join faculty on offering.FacSSN = faculty.FacSSN where CourseNo like "IS%" and OffYear = 2005 and OffTerm = "Fall";
++---------+----------+---------------+
+| OfferNo | CourseNo | FacName       |
++---------+----------+---------------+
+|    1234 | IS320    | LEONARD VINCE |
+|    4321 | IS320    | LEONARD VINCE |
++---------+----------+---------------+
+2 rows in set (0.002 sec)
+
+--------------------------------------------------------------------------------
+
+MySQL [college]> select stdMajor, round(avg(stdGPA), 2) as avgGPA from student group by stdMajor;
++----------+--------+
+| stdMajor | avgGPA |
++----------+--------+
+| IS       |   3.23 |
+| FIN      |   2.80 |
+| ACCT     |   3.40 |
++----------+--------+
+3 rows in set (0.001 sec)
+
+--------------------------------------------------------------------------------
+
+MySQL [college]> select OffYear, count(OfferNo) as nOfferings, count(distinct(CourseNo)) as nCourses from offering group by OffYear ;
++---------+------------+----------+
+| OffYear | nOfferings | nCourses |
++---------+------------+----------+
+|    2005 |          3 |        2 |
+|    2006 |         10 |        6 |
++---------+------------+----------+
+2 rows in set (0.002 sec)
+
+--------------------------------------------------------------------------------
+
+MySQL [college]> select stdMajor,  round(avg(stdGPA),2) as avgGPA from student where stdClass = "JR" or stdClass = "SR" group by stdMajor having avgGPA > 3.1;
++----------+--------+
+| stdMajor | avgGPA |
++----------+--------+
+| ACCT     |   3.50 |
+| IS       |   3.15 |
++----------+--------+
+2 rows in set (0.002 sec)
+
+--------------------------------------------------------------------------------
+
+MySQL [college]> select stdMajor, stdClass, min(stdGPA), max(stdGPA) from student group by stdMajor, stdClass order by stdMajor, stdClass;
++----------+----------+-------------+-------------+
+| stdMajor | stdClass | min(stdGPA) | max(stdGPA) |
++----------+----------+-------------+-------------+
+| ACCT     | JR       |        3.50 |        3.50 |
+| ACCT     | SO       |        3.30 |        3.30 |
+| FIN      | JR       |        2.50 |        2.70 |
+| FIN      | SR       |        3.20 |        3.20 |
+| IS       | FR       |        3.00 |        3.00 |
+| IS       | JR       |        3.60 |        3.60 |
+| IS       | SO       |        3.80 |        3.80 |
+| IS       | SR       |        2.20 |        4.00 |
++----------+----------+-------------+-------------+
+8 rows in set (0.001 sec)
+
+---------------------------------------------------------------------------------
+
+MySQL [college]> select crsDesc, count(*) as nOfferings from offering join course on offering.CourseNo = course.CourseNo where offering.CourseNo like "IS%" group by crsDesc;
++--------------------------------------+------------+
+| crsDesc                              | nOfferings |
++--------------------------------------+------------+
+| FUNDAMENTALS OF BUSINESS PROGRAMMING |          6 |
+| SYSTEMS ANALYSIS                     |          2 |
+| FUNDAMENTALS OF DATABASE MANAGEMENT  |          2 |
++--------------------------------------+------------+
+3 rows in set (0.002 sec)
+
+--------------------------------------------------------------------------------
+
+MySQL [college]> select concat(stdFirstName, " ", stdLastName) as name, stdCity, stdState, stdGPA from student where stdClass = "JR" order by stdGPA asc;
++-----------------+---------+----------+--------+
+| name            | stdCity | stdState | stdGPA |
++-----------------+---------+----------+--------+
+| ROBERTO MORALES | SEATTLE | WA       |   2.50 |
+| BOB NORBERT     | BOTHELL | WA       |   2.70 |
+| CANDY KENDALL   | TACOMA  | WA       |   3.50 |
+| MARIAH DODGE    | SEATTLE | WA       |   3.60 |
++-----------------+---------+----------+--------+
+4 rows in set (0.001 sec)
