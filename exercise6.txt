@@ -130,3 +130,65 @@ MySQL [college]> select concat(stdFirstName, " ", stdLastName) as name, stdCity,
 | MARIAH DODGE    | SEATTLE | WA       |   3.60 |
 +-----------------+---------+----------+--------+
 4 rows in set (0.001 sec)
+
+-------------------------------------------------------------------------------
+
+
+MySQL [college]> select distinct(concat(FacState," ", FacCity)) as state_city from faculty;
++-------------+
+| state_city  |
++-------------+
+| WA SEATTLE  |
+| WA BOTHELL  |
+| WA BELLEVUE |
++-------------+
+3 rows in set (0.002 sec)
+
+-------------------------------------------------------------------------------
+
+MySQL [college]> select stdFirstName, stdLastName, offering.OfferNo, EnrGrade from student join enrollment on student.stdSSN = enrollment.stdSSN join offering on enrollment.OfferNo = offering.OfferNo where EnrGrade >= 3.5;
++--------------+-------------+---------+----------+
+| stdFirstName | stdLastName | OfferNo | EnrGrade |
++--------------+-------------+---------+----------+
+| CANDY        | KENDALL     |    1234 |     3.50 |
+| MARIAH       | DODGE       |    1234 |     3.80 |
+| HOMER        | WELLS       |    4321 |     3.50 |
+| ROBERTO      | MORALES     |    4321 |     3.50 |
+| BOB          | NORBERT     |    5679 |     3.70 |
+| ROBERTO      | MORALES     |    5679 |     3.80 |
+| MARIAH       | DODGE       |    6666 |     3.60 |
+| LUKE         | BRAZZI      |    7777 |     3.70 |
+| BOB          | NORBERT     |    9876 |     3.50 |
+| WILLIAM      | PILGRIM     |    9876 |     4.00 |
++--------------+-------------+---------+----------+
+10 rows in set (0.002 sec)
+
+--------------------------------------------------------------------------------
+
+MySQL [college]> select distinct(concat(stdFirstName," ", stdLastName)) as name, offering.OfferNo, EnrGrade from student join enrollment on student.stdSSN = enrollment.stdSSN join offering on enrollment.OfferNo = offering.OfferNo where EnrGrade >= 3.5;
++-----------------+---------+----------+
+| name            | OfferNo | EnrGrade |
++-----------------+---------+----------+
+| CANDY KENDALL   |    1234 |     3.50 |
+| MARIAH DODGE    |    1234 |     3.80 |
+| HOMER WELLS     |    4321 |     3.50 |
+| ROBERTO MORALES |    4321 |     3.50 |
+| BOB NORBERT     |    5679 |     3.70 |
+| ROBERTO MORALES |    5679 |     3.80 |
+| MARIAH DODGE    |    6666 |     3.60 |
+| LUKE BRAZZI     |    7777 |     3.70 |
+| BOB NORBERT     |    9876 |     3.50 |
+| WILLIAM PILGRIM |    9876 |     4.00 |
++-----------------+---------+----------+
+10 rows in set (0.002 sec)
+
+--------------------------------------------------------------------------------
+
+MySQL [college]> select concat(stdFirstName," ", stdLastName) as stdName, offering.OfferNo, course.CourseNo, offering.OffDays, offering.OffLocation, offering.OffTime, concat(faculty.FacFirstName," ", faculty.FacLastName) as facName  from student join enrollment on student.stdSSN = enrollment.stdSSN join offering on offering.OfferNo = enrollment.OfferNo  join course on course.CourseNo = offering.CourseNo  join faculty on faculty.FacSSN = offering.FacSSN where stdFirstName = "Bob" and stdLastName = "Norbert" and OffTerm = "spring" and OffYear = "2006";
++-------------+---------+----------+---------+-------------+----------+------------------+
+| stdName     | OfferNo | CourseNo | OffDays | OffLocation | OffTime  | facName          |
++-------------+---------+----------+---------+-------------+----------+------------------+
+| BOB NORBERT |    5679 | IS480    | TTH     | BLM412      | 15:30:00 | CRISTOPHER COLAN |
+| BOB NORBERT |    9876 | IS460    | TTH     | BLM307      | 13:30:00 | LEONARD FIBON    |
++-------------+---------+----------+---------+-------------+----------+------------------+
+2 rows in set (0.003 sec)
