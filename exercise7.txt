@@ -128,5 +128,5 @@ Type "it" for more
 
 --------------------------------------------------------------------------
 
-db.restaurants.find({"address.street":{$exists:0}})
+db.restaurants.find({"address.street":{$exists:0}}).count()
 
