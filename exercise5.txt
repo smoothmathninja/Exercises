@@ -48,12 +48,12 @@ MySQL [vacation]> select avg(price) from room;
 
 ---------------------------------------------------------------------
 
-MySQL [vacation]> select sum(price) as total from room where type = "double";
-+--------+
-| total  |
-+--------+
-| 160.00 |
-+--------+
+MySQL [vacation]> select count(*) as total from room where type = "double";
++-------+
+| total |
++-------+
+|     4 |
++-------+
 1 row in set (0.001 sec)
 
 ----------------------------------------------------------------------
@@ -147,7 +147,7 @@ MySQL [vacation]> select hotelname, count(*) as nRooms from room join hotel on r
 
 --------------------------------------------------------------------
 
-MySQL [vacation]> select hotelname as name, type as type, count(*) as nBookings from room join hotel on room.hotelno = hotel.hotelno join booking on room.roomno = booking.roomno and room.hotelno = booking.hotelno where city = "London" group by hotelname, type order by nBookings desc;
+MySQL [vacation]> select hotelname as name, type, count(*) as nBookings from room join hotel on room.hotelno = hotel.hotelno join booking on room.roomno = booking.roomno and room.hotelno = booking.hotelno where city = "London" group by hotelname, type order by nBookings desc;
 +-----------------+--------+-----------+
 | name            | type   | nBookings |
 +-----------------+--------+-----------+
@@ -158,6 +158,10 @@ MySQL [vacation]> select hotelname as name, type as type, count(*) as nBookings 
 | The Tower Hotel | family |         1 |
 +-----------------+--------+-----------+
 5 rows in set (0.002 sec)
+
+
+MySQL [vacation]> select * (select hotelname as name, type, count(*) as nBookings from room join hotel on room.hotelno = hotel.hotelno join booking on room.roomno = booking.roomno and room.hotelno = booking.hotelno where city = "London" group by hotelname, type order by nBookings desc) as sel1 group by sel1.name;
+
 
 -------------------------------------------------------------------
 
