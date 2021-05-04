@@ -1,0 +1,189 @@
+MySQL [vacation]> select distinct(guestname), guestaddress from booking join guest on booking.guestno = guest.guestno join hotel on booking.hotelno = hotel.hotelno where city = "London" order by guestname asc;
++--------------+-----------------------+
+| guestname    | guestaddress          |
++--------------+-----------------------+
+| Carol Farrel | 6 Achray St, Glasgow  |
+| Joe Keogh    | 2 Fergus Dr, Aberdeen |
+| John Kay     | 56 High St, London    |
+| Mike Ritchie | 18 Tain St, London    |
+| Tina Murphy  | 63 Well St, Glasgow   |
++--------------+-----------------------+
+5 rows in set (0.002 sec)
+
+_____________________________________________________________________
+
+MySQL [vacation]> select * from room where price < 40 and (type = "double" or type = "family") order by price asc;
++--------+---------+--------+-------+
+| roomno | hotelno | type   | price |
++--------+---------+--------+-------+
+|    801 | ch02    | double | 15.00 |
+|    601 | fb01    | double | 29.00 |
+|   1001 | dc01    | double | 30.00 |
+|   1101 | dc01    | family | 35.00 |
+|    701 | fb01    | family | 39.00 |
++--------+---------+--------+-------+
+5 rows in set (0.001 sec)
+
+---------------------------------------------------------------------
+
+MySQL [vacation]> select * from booking where dateto is null;
++---------+---------+------------+--------+--------+
+| hotelno | guestno | datefrom   | dateto | roomno |
++---------+---------+------------+--------+--------+
+| ch01    |   10006 | 2020-04-21 | NULL   |   1101 |
+| dc01    |   10003 | 2020-05-20 | NULL   |   1001 |
+| fb01    |   10001 | 2020-05-01 | NULL   |    701 |
++---------+---------+------------+--------+--------+
+3 rows in set (0.001 sec)
+
+---------------------------------------------------------------------
+
+MySQL [vacation]> select avg(price) from room;
++------------+
+| avg(price) |
++------------+
+|  35.748333 |
++------------+
+1 row in set (0.001 sec)
+
+---------------------------------------------------------------------
+
+MySQL [vacation]> select sum(price) as total from room where type = "double";
++--------+
+| total  |
++--------+
+| 160.00 |
++--------+
+1 row in set (0.001 sec)
+
+----------------------------------------------------------------------
+
+MySQL [vacation]> select distinct(guest.guestname) from booking join guest on booking.guestno = guest.guestno  where 05 between month(datefrom) and month(dateto) or year(dateto) > 2020;
++--------------+
+| guestname    |
++--------------+
+| Mike Ritchie |
+| Tony Shaw    |
+| Joe Keogh    |
+| Carol Farrel |
+| Mary Tregear |
++--------------+
+5 rows in set (0.001 sec)
+
+----------------------------------------------------------------------
+
+MySQL [vacation]> select type, price from room join hotel on room.hotelno = hotel.hotelno where hotelname = "The Tower Hotel";
++--------+-------+
+| type   | price |
++--------+-------+
+| single | 19.00 |
+| double | 29.00 |
+| family | 39.00 |
++--------+-------+
+3 rows in set (0.001 sec)
+
+---------------------------------------------------------------------
+
+MySQL [vacation]> select * from booking join guest on booking.guestno = guest.guestno join hotel on booking.hotelno = hotel.hotelno where hotelname = "The Tower Hotel" and curdate() between datefrom and dateto;
+Empty set (0.002 sec)
+
+---------------------------------------------------------------------
+
+MySQL [vacation]> select * from room join hotel on room.hotelno = hotel.hotelno left join booking on room.hotelno = booking.hotelno and room.roomno = booking.roomno left join guest on guest.guestno = booking.guestno where hotelname = "The Tower Hotel";
++--------+---------+--------+-------+---------+-----------------+--------+---------+---------+------------+------------+--------+---------+--------------+-----------------------+
+| roomno | hotelno | type   | price | hotelno | hotelname       | city   | hotelno | guestno | datefrom   | dateto     | roomno | guestno | guestname    | guestaddress          |
++--------+---------+--------+-------+---------+-----------------+--------+---------+---------+------------+------------+--------+---------+--------------+-----------------------+
+|    501 | fb01    | single | 19.00 | fb01    | The Tower Hotel | London | fb01    |   10005 | 2020-05-02 | 2020-05-07 |    501 |   10005 | Carol Farrel | 6 Achray St, Glasgow  |
+|    501 | fb01    | single | 19.00 | fb01    | The Tower Hotel | London | fb01    |   10001 | 2020-04-01 | 2020-04-08 |    501 |   10001 | John Kay     | 56 High St, London    |
+|    601 | fb01    | double | 29.00 | fb01    | The Tower Hotel | London | fb01    |   10004 | 2020-04-15 | 2020-05-15 |    601 |   10004 | Joe Keogh    | 2 Fergus Dr, Aberdeen |
+|    601 | fb01    | double | 29.00 | fb01    | The Tower Hotel | London | fb01    |   10002 | 2020-01-04 | 2020-01-29 |    601 |   10002 | Mike Ritchie | 18 Tain St, London    |
+|    701 | fb01    | family | 39.00 | fb01    | The Tower Hotel | London | fb01    |   10001 | 2020-05-01 | NULL       |    701 |   10001 | John Kay     | 56 High St, London    |
++--------+---------+--------+-------+---------+-----------------+--------+---------+---------+------------+------------+--------+---------+--------------+-----------------------+
+5 rows in set (0.002 sec)
+
+--------------------------------------------------------------------
+
+MySQL [vacation]> select sum(price) as total from booking join room on room.roomno = booking.roomno and room.hotelno = booking.hotelno join hotel on hotel.hotelno = booking.hotelno where hotelname = "The Tower Hotel" and "2020-05-04"  between datefrom and dateto;
++-------+
+| total |
++-------+
+| 48.00 |
++-------+
+1 row in set (0.002 sec)
+
+--------------------------------------------------------------------
+
+MySQL [vacation]> select booking.roomno from booking join room on room.roomno = booking.roomno and room.hotelno = booking.hotelno join hotel on hotel.hotelno = booking.hotelno where hotelname = "The Tower Hotel" and "2020-05-04"  not between datefrom and dateto;
++--------+
+| roomno |
++--------+
+|    501 |
+|    701 |
+|    601 |
++--------+
+3 rows in set (0.002 sec)
+
+--------------------------------------------------------------------
+
+MySQL [vacation]> select sum(price) as lostIncome from booking join room on room.roomno = booking.roomno and room.hotelno = booking.hotelno join hotel on hotel.hotelno = booking.hotelno where hotelname = "The Tower Hotel" and "2020-05-04"  not between datefrom and dateto;
++------------+
+| lostIncome |
++------------+
+|      87.00 |
++------------+
+1 row in set (0.002 sec)
+
+--------------------------------------------------------------------
+
+MySQL [vacation]> select hotelname, count(*) as nRooms from room join hotel on room.hotelno = hotel.hotelno where city = "London" group by hotelname;
++-----------------+--------+
+| hotelname       | nRooms |
++-----------------+--------+
+| Omni Shoreham   |      2 |
+| Phoenix Park    |      2 |
+| The Tower Hotel |      3 |
++-----------------+--------+
+3 rows in set (0.002 sec)
+
+--------------------------------------------------------------------
+
+MySQL [vacation]> select hotelname as name, type as type, count(*) as nBookings from room join hotel on room.hotelno = hotel.hotelno join booking on room.roomno = booking.roomno and room.hotelno = booking.hotelno where city = "London" group by hotelname, type order by nBookings desc;
++-----------------+--------+-----------+
+| name            | type   | nBookings |
++-----------------+--------+-----------+
+| The Tower Hotel | single |         2 |
+| The Tower Hotel | double |         2 |
+| Omni Shoreham   | family |         1 |
+| Phoenix Park    | double |         1 |
+| The Tower Hotel | family |         1 |
++-----------------+--------+-----------+
+5 rows in set (0.002 sec)
+
+-------------------------------------------------------------------
+
+MySQL [vacation]> update room set price=round((price/100*105), 2); 
+Query OK, 12 rows affected (0.004 sec)
+Rows matched: 12  Changed: 12  Warnings: 0
+
+
+--> check if changes are okay:
+
+MySQL [vacation]> select * from room;
++--------+---------+--------+-------+
+| roomno | hotelno | type   | price |
++--------+---------+--------+-------+
+|    501 | fb01    | single | 19.95 |
+|    601 | fb01    | double | 30.45 |
+|    701 | ch02    | single | 10.50 |
+|    701 | fb01    | family | 40.95 |
+|    801 | ch02    | double | 15.75 |
+|    901 | dc01    | single | 18.90 |
+|   1001 | ch01    | single | 31.49 |
+|   1001 | dc01    | double | 31.50 |
+|   1001 | fb02    | single | 60.90 |
+|   1101 | ch01    | family | 62.99 |
+|   1101 | dc01    | family | 36.75 |
+|   1101 | fb02    | double | 90.30 |
++--------+---------+--------+-------+
+12 rows in set (0.001 sec)
+
